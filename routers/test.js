@@ -4,7 +4,7 @@ const { getAllTests, getFirstTest, getTestByID, insertTestOrUpdate, deleteTestBy
 const router = Router()
 
 router.get('/', async (req, res) => {
-  const data = await getAllTests()
+  const data = await getAllTests(req.query)
   res.json({ data })
 })
 
@@ -18,12 +18,17 @@ router.get('/id', async (req, res) => {
   res.json({ data })
 })
 
-router.get('/add', async (req, res) => {
-  const data = await insertTestOrUpdate(req.query)
+router.post('/add', async (req, res) => {
+  const data = await insertTestOrUpdate(req.body)
   res.json({ data })
 })
 
-router.get('/delete', async (req, res) => {
+router.put('/update', async (req, res) => {
+  const data = await insertTestOrUpdate(req.body)
+  res.json({ data })
+})
+
+router.delete('/delete', async (req, res) => {
   const data = await deleteTestByID(req.query.id)
   res.json({ data })
 })

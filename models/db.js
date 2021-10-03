@@ -10,31 +10,39 @@ class DB {
     })
   }
 
-  async find(collection, query = {}, options = {}) {
+  find(collection, query = {}, options = {}) {
     return this.database.collection(collection).find(query, options).toArray()
   }
 
-  async findOne(collection, query = {}, options = {}) {
+  findOne(collection, query = {}, options = {}) {
     return this.database.collection(collection).findOne(query, options)
+  }
+
+  count(collection, query = {}) {
+    return this.database.collection(collection).find(query).count()
   }
 
   async insertOne(collection, obj, pk) {
     if (pk && await this.isExist(collection, pk, obj[pk]))
       return console.log(`${collection} pk: ${pk} repeat...`, obj[pk])
-    return this.database.collection(collection).insertOne(obj)
+    return this.database.collection(collection).
+      insertOne({ ...obj, created_at: new Date(), updated_at: new Date() })
   }
 
-  async insertOneOrUpdate(collection, obj, pk) {
+  insertOneOrUpdate(collection, obj, pk) {
     if (pk === '_id') obj[_id] = ObjectId(obj[_id])
     return this.database.collection(collection).
       updateOne(
         { [pk]: obj[pk] },
-        { $set: obj },
+        {
+          $set: { ...obj, updated_at: new Date() },
+          $setOnInsert: { created_at: new Date() }
+        },
         { upsert: true }
       )
   }
 
-  async updateMany(collection, obj, pk) {
+  updateMany(collection, obj, pk) {
     return this.database.collection(collection).
       updateMany(
         { [pk]: obj[pk] },
@@ -42,13 +50,13 @@ class DB {
       )
   }
 
-  async deleteOne(collection, k, v) {
+  deleteOne(collection, k, v) {
     if (k === '_id') v = ObjectId(v)
     return this.database.collection(collection).
       deleteOne({ [k]: v })
   }
 
-  async deleteMany(collection, k, v) {
+  deleteMany(collection, k, v) {
     if (k === '_id') v = ObjectId(v)
     return this.database.collection(collection).
       deleteMany({ [k]: v })
