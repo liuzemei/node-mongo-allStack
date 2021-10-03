@@ -1,11 +1,12 @@
 const { MongoClient, ObjectId } = require('mongodb')
+const config = require('../config.json')
 
 class DB {
   constructor() {
-    const uri = 'mongodb://127.0.0.1:27017'
+    const uri = config.mongo.uri
     const client = new MongoClient(uri)
     client.connect().then(client => {
-      this.database = client.db('mongo_study')
+      this.database = client.db(config.mongo.db)
     })
   }
 

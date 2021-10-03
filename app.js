@@ -1,13 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const { initRouter } = require('./routers')
-let config
-try {
-  config = require('./config.json')
-} catch {
-  config = { port: 7001 }
-}
-
+let config = require('./config.json')
 
 const app = express()
 app.use(bodyParser.json())
