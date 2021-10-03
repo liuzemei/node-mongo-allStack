@@ -1,7 +1,12 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const db = require('./db/mongo')
-const { getAllSliders } = require('./db/user')
+const { initRouter } = require('./routers')
+let config
+try {
+  config = require('./config.json')
+} catch {
+  config = { port: 7001 }
+}
 
 
 const app = express()
@@ -22,12 +27,9 @@ app.use((req, res, next) => {
   next()
 })
 
+initRouter(app)
 
-app.get('/', async (req, res) => {
-  const data = await getAllSliders()
-  res.json({ data })
+app.listen(config.port, () => {
+  console.log('server start on ' + config.port)
 })
-
-
-app.listen(7001)
 
